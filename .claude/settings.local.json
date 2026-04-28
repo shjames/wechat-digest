@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(python -c \"import sys,json; tabs=json.load\\(sys.stdin\\); [print\\(t['targetId'][:12], t.get\\('url',''\\)[:60]\\) for t in tabs if 'weread' in t.get\\('url',''\\)]\")",
+      "Bash(node fetch.mjs --date 2026-04-27 --output tmp/fetch-result.json)",
+      "Bash(node *)",
+      "Bash(npm install *)",
+      "WebSearch",
+      "Bash(claude *)",
+      "Read(//c/Users/Administrator/.claude/**)"
+    ]
+  }
+}
