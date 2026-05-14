@@ -14,6 +14,7 @@
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { spawn } from "node:child_process";
 
 // ─── 参数解析 ───────────────────────────────────────────────
 
@@ -34,12 +35,44 @@ const TARGET_DATE = getArg("date", yesterdayBJ());
 const OUTPUT_FILE = getArg("output", "");
 const ACCOUNTS_FILE = getArg("accounts", resolve(process.cwd(), "accounts.txt"));
 const PROXY = getArg("proxy", "http://localhost:3488");
+const PROXY_SCRIPT = "C:/Users/Administrator/.agents/skills/web-access/scripts/cdp-proxy.mjs";
 const BATCH_SIZE = 5;
 const FETCH_DELAY_MS = 800; // 每个账号间隔，避免限流
 
 // ─── 日志 ──────────────────────────────────────────────────
 
 const log = (...a) => console.error(`[fetch]`, ...a);
+
+// ─── CDP Proxy 自启动 ──────────────────────────────────────
+
+async function ensureProxy() {
+  // 先检查是否已在运行
+  try {
+    const r = await fetch(`${PROXY}/health`);
+    if (r.ok) {
+      const d = await r.json();
+      log(`CDP proxy 已运行, Chrome 连接: ${d.connected ? "ok" : "未连接（会按需连接）"}`);
+      return;
+    }
+  } catch { /* 未运行，启动 */ }
+
+  log("启动 CDP proxy...");
+  const child = spawn("node", [PROXY_SCRIPT], {
+    detached: true,
+    stdio: "ignore",
+  });
+  child.unref();
+
+  // 等待 proxy 就绪，最多 15 秒
+  for (let i = 0; i < 30; i++) {
+    try {
+      const r = await fetch(`${PROXY}/health`);
+      if (r.ok) { log("CDP proxy 启动成功"); return; }
+    } catch {}
+    await new Promise(r => setTimeout(r, 500));
+  }
+  throw new Error("CDP proxy 启动超时，请手动运行: node " + PROXY_SCRIPT);
+}
 
 // ─── CDP 工具 ──────────────────────────────────────────────
 
@@ -82,6 +115,7 @@ function parseAccounts(path) {
 // ─── 核心流程 ──────────────────────────────────────────────
 
 async function main() {
+  await ensureProxy();
   log(`目标日期: ${TARGET_DATE}`);
   log(`账号文件: ${ACCOUNTS_FILE}`);
 
@@ -141,6 +175,44 @@ async function main() {
     const matchCount = Object.keys(matched).length;
     log(`匹配成功 ${matchCount}，未匹配 ${unmatched.length}: ${unmatched.join(", ") || "无"}`);
 
+    // 3.5 提取 reader 页 URL（从 DOM 解析 bookId）
+    log("提取 reader 页面链接...");
+    const readerUrlsResult = await cdpEval(targetId, `
+      (() => {
+        const links = document.querySelectorAll("a[href*='/web/mp/reader/']");
+        const map = {};
+        for (const link of links) {
+          const href = link.href;
+          const match = href.match(/\\/web\\/mp\\/reader\\/(.+)$/);
+          if (!match) continue;
+          const hexId = match[1];
+          // 在 hexId 中搜索 "224d505f5758535f" = "MP_WXS_" 的十六进制编码
+          const marker = "224d505f5758535f";
+          const idx = hexId.indexOf(marker);
+          if (idx === -1) continue;
+          // 标记后面是数字部分，每 2 个十六进制 = 一个数字字符
+          let numericPart = "";
+          for (let i = idx + marker.length; i < hexId.length; i += 2) {
+            const hex = hexId.slice(i, i + 2);
+            if (hex.length < 2) break;
+            const ch = String.fromCharCode(parseInt(hex, 16));
+            if (ch >= "0" && ch <= "9") {
+              numericPart += ch;
+            } else {
+              break;
+            }
+          }
+          if (numericPart) {
+            const bookId = "MP_WXS_" + numericPart;
+            map[bookId] = href;
+          }
+        }
+        return JSON.stringify(map);
+      })()
+    `);
+    const readerUrls = parseResult(readerUrlsResult);
+    log(`提取到 ${Object.keys(readerUrls).length} 个 reader 链接`);
+
     // 4. 批量抓取文章
     const entries = Object.entries(matched); // [[name, bookId], ...]
     const results = {};
@@ -184,6 +256,7 @@ async function main() {
                     arts.push({
                       title: info.title,
                       content: (info.content || "").slice(0, 600),
+                      reviewId: sub.reviewId,
                       time: ts,
                       timeStr: hh + ":" + mm,
                       readNum: info.readNum || 0,
@@ -219,10 +292,28 @@ async function main() {
       }
     }
 
+    // 4.5 验证码检测
+    const errCodes = Object.values(errors);
+    const captchaCount = errCodes.filter(e => e === -2041 || e === "-2041").length;
+    const totalErrors = errCodes.length;
+    if (captchaCount > 0 && captchaCount === totalErrors) {
+      log("");
+      log("╔════════════════════════════════════════╗");
+      log("║  全部账号返回 -2041（需要验证码）       ║");
+      log("║                                        ║");
+      log("║  请在 Chrome 中打开 weread.qq.com       ║");
+      log("║  进入任意公众号文章页面完成验证码        ║");
+      log("║  然后重新运行 fetch.mjs                 ║");
+      log("╚════════════════════════════════════════╝");
+    } else if (captchaCount > 0) {
+      log(`⚠️ ${captchaCount}/${totalErrors} 个账号需验证码，可在 Chrome 中完成验证后重试`);
+    }
+
     // 5. 组装输出
     const output = {
       date: TARGET_DATE,
       accounts: results,
+      readerUrls,
       unmatched,
       errors,
       summary: {
