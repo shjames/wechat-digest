@@ -138,13 +138,13 @@ const CSS = `
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:      #f2f2f2;
-  --white:   #ffffff;
-  --text:    #1c1c1c;
-  --text2:   #555555;
-  --text3:   #aaaaaa;
-  --accent:  #1677ff;
-  --border:  #e8e8e8;
+  --bg:      #f5ede2;
+  --white:   #fffcf7;
+  --text:    #1c1712;
+  --text2:   #5c4f42;
+  --text3:   #b09880;
+  --accent:  #c0601a;
+  --border:  #e8d8c8;
   --shadow:  0 1px 6px rgba(0,0,0,.08);
   --shadow2: 0 2px 16px rgba(0,0,0,.12);
   --r:       10px;
@@ -281,7 +281,7 @@ body {
 
 /* card cover — dark with month color accent */
 .card-cover {
-  background: #141414;
+  background: #1e1208;
   padding: 13px 13px 12px;
   position: relative;
   min-height: 168px;
