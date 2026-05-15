@@ -1,303 +1,742 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
-import { join, basename } from 'path';
+import { join } from 'path';
 import { marked } from 'marked';
 
 const OUTPUT_DIR = './output';
-const SITE_DIR = './site';
+const SITE_DIR   = './site';
 const SITE_TITLE = '公众号日报';
 
-// ── CSS ──────────────────────────────────────────────────────────────────────
+// ── constants ─────────────────────────────────────────────────────────────────
+
+const WEEKDAYS  = ['日', '一', '二', '三', '四', '五', '六'];
+const MONTHS_EN = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+function parseDate(dateStr) {
+  const [year, month, day] = dateStr.split('-');
+  const d = new Date(dateStr + 'T00:00:00');
+  return { year, month, day, monthEn: MONTHS_EN[+month - 1], wd: `星期${WEEKDAYS[d.getDay()]}` };
+}
+
+function parseMeta(md) {
+  const m = md.match(/共\s*(\d+)\s*个账号.*?(\d+)\s*篇文章/);
+  if (m) return { accounts: m[1], articles: m[2] };
+  const a = md.match(/(\d+)\s*篇文章/);
+  return { accounts: '?', articles: a ? a[1] : '?' };
+}
+
+// ── CSS ───────────────────────────────────────────────────────────────────────
 
 const CSS = `
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #ffffff;
-  --bg2: #f7f8fa;
-  --border: #e8eaed;
-  --text: #202124;
-  --text2: #5f6368;
-  --accent: #1a73e8;
-  --accent-bg: #e8f0fe;
-  --tag-bg: #f1f3f4;
-  --radius: 8px;
-  --max-w: 780px;
+  --bg:       #f6f1e7;
+  --bg2:      #ede8db;
+  --surface:  #faf7f0;
+  --ink:      #1d1912;
+  --ink2:     #6b6258;
+  --ink3:     #a89e94;
+  --accent:   #b83224;
+  --accent2:  #d4574a;
+  --rule:     #d8d0c2;
+  --rule2:    #e8e2d6;
+  --serif:    'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', 'SimSun', Georgia, serif;
+  --display:  'Cormorant Garamond', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --max-w:    740px;
+  --r:        3px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1c1c1e;
-    --bg2: #2c2c2e;
-    --border: #3a3a3c;
-    --text: #f2f2f7;
-    --text2: #aeaeb2;
-    --accent: #4da3ff;
-    --accent-bg: #1c3354;
-    --tag-bg: #3a3a3c;
+    --bg:      #13100b;
+    --bg2:     #1c1812;
+    --surface: #171410;
+    --ink:     #ede5d6;
+    --ink2:    #a09484;
+    --ink3:    #6a6055;
+    --accent:  #d4826a;
+    --accent2: #e09a82;
+    --rule:    #2c2820;
+    --rule2:   #231f18;
   }
 }
 
-html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+/* ── base ── */
+html { font-size: 16px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
-               "Microsoft YaHei", "Segoe UI", sans-serif;
+  font-family: var(--serif);
   background: var(--bg);
-  color: var(--text);
-  line-height: 1.7;
-  padding-bottom: 60px;
+  color: var(--ink);
+  line-height: 1.8;
+  padding-bottom: 80px;
+  min-height: 100vh;
 }
 
-/* Nav */
+/* ── animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.fade-up   { animation: fadeUp 0.55s cubic-bezier(.22,.68,0,1.2) both; }
+.fade-in   { animation: fadeIn 0.4s ease both; }
+.delay-1   { animation-delay: 0.07s; }
+.delay-2   { animation-delay: 0.14s; }
+.delay-3   { animation-delay: 0.21s; }
+.delay-4   { animation-delay: 0.28s; }
+
+/* ── scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+/* ── nav ── */
 .nav {
   position: sticky;
   top: 0;
   z-index: 100;
   background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule2);
+  padding: 0 20px;
+  height: 52px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
-.nav a { color: var(--accent); text-decoration: none; font-size: 14px; }
-.nav a:hover { text-decoration: underline; }
-.nav-title { font-size: 15px; font-weight: 600; color: var(--text); flex: 1; }
-.nav-sep { color: var(--text2); font-size: 12px; }
 
-/* Container */
-.container { max-width: var(--max-w); margin: 0 auto; padding: 24px 16px; }
+.nav-home {
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink2);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.nav-home:hover { color: var(--accent); }
+.nav-home svg { flex-shrink: 0; }
 
-/* Index page */
-.index-hero { text-align: center; padding: 40px 0 32px; }
-.index-hero h1 { font-size: 28px; font-weight: 700; }
-.index-hero p { color: var(--text2); margin-top: 8px; font-size: 15px; }
+.nav-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
 
+.nav-info {
+  font-family: var(--display);
+  font-size: 12px;
+  color: var(--ink3);
+  letter-spacing: 0.06em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.nav-brand {
+  margin-left: auto;
+  font-family: var(--display);
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  color: var(--ink2);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── container ── */
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ── masthead (index) ── */
+.masthead {
+  text-align: center;
+  padding: 60px 20px 52px;
+  animation: fadeUp 0.7s cubic-bezier(.22,.68,0,1.2) both;
+}
+
+.masthead-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.masthead-ornament::before,
+.masthead-ornament::after {
+  content: '';
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--rule));
+}
+.masthead-ornament::after {
+  background: linear-gradient(to left, transparent, var(--rule));
+}
+.masthead-ornament-diamond {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+.masthead h1 {
+  font-family: var(--display);
+  font-size: clamp(32px, 8vw, 52px);
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  color: var(--ink);
+  line-height: 1;
+  padding-right: 0.35em; /* compensate letter-spacing on last char */
+}
+
+.masthead-en {
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--ink3);
+  text-transform: uppercase;
+  margin-top: 14px;
+}
+
+.masthead-rule {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 24px auto 0;
+  max-width: 340px;
+}
+.masthead-rule-line {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.masthead-rule-line.thick {
+  height: 2px;
+  background: var(--ink);
+}
+.masthead-rule-gap { width: 4px; }
+
+.masthead-meta {
+  font-family: var(--display);
+  font-size: 12px;
+  color: var(--ink3);
+  letter-spacing: 0.1em;
+  margin-top: 20px;
+}
+
+/* ── year group (index) ── */
+.year-group { margin-top: 44px; }
+.year-group + .year-group { margin-top: 36px; }
+
+.year-label {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--ink3);
+  text-transform: uppercase;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 14px;
+}
+
+/* ── date grid (index) ── */
 .date-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-  margin-top: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
 }
 
 .date-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--rule2);
+  border-radius: var(--r);
+  padding: 18px 14px 14px;
   text-decoration: none;
-  color: var(--text);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  color: var(--ink);
+  transition: border-color 0.22s, transform 0.22s, box-shadow 0.22s;
+  position: relative;
+  overflow: hidden;
 }
+
+.date-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
 .date-card:hover {
+  border-color: var(--rule);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+}
+
+.date-card:hover::before { transform: scaleX(1); }
+
+.date-card.today {
   border-color: var(--accent);
-  box-shadow: 0 2px 8px rgba(26,115,232,0.12);
+  background: var(--bg2);
 }
-.date-card .date-label { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-.date-card .date-meta { font-size: 13px; color: var(--text2); margin-top: 4px; }
-.date-card .date-weekday { font-size: 12px; color: var(--accent); margin-top: 8px; font-weight: 500; }
+.date-card.today::before { transform: scaleX(1); }
 
-/* Article page */
-.page-header { padding: 28px 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
-.page-header h1 { font-size: 22px; font-weight: 700; }
-.page-header .meta { color: var(--text2); font-size: 14px; margin-top: 6px; }
+.card-month {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
 
-/* Markdown rendered content */
+.card-day {
+  font-family: var(--display);
+  font-size: 40px;
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin: 1px 0 2px;
+}
+
+.card-weekday {
+  font-family: var(--serif);
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 0.04em;
+}
+
+.card-meta {
+  font-family: var(--display);
+  font-size: 11px;
+  color: var(--ink2);
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule2);
+  letter-spacing: 0.04em;
+}
+
+/* ── page header (article) ── */
+.page-header {
+  padding: 48px 0 36px;
+  margin-bottom: 44px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 48px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.page-header-eyebrow {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--ink3);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.page-header-date {
+  font-family: var(--display);
+  font-size: clamp(36px, 10vw, 58px);
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.page-header-date em {
+  font-style: normal;
+  color: var(--ink3);
+  font-size: 0.55em;
+  letter-spacing: 0.1em;
+}
+
+.page-header-wd {
+  font-family: var(--display);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: var(--ink2);
+  margin-top: 8px;
+}
+
+.page-header-meta {
+  display: flex;
+  gap: 20px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.page-header-meta-item {
+  font-family: var(--display);
+  font-size: 12px;
+  color: var(--ink3);
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.meta-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* ── markdown body ── */
+
+/* h2: account sections */
 .md-body h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 32px 0 12px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid var(--border);
-  color: var(--text);
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin: 52px 0 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+  line-height: 1.3;
 }
+
+.md-body h2::before {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 36px;
+  height: 2px;
+  background: var(--accent);
+}
+
 .md-body h2:first-child { margin-top: 0; }
 
+/* h3: article titles */
 .md-body h3 {
-  font-size: 15px;
-  font-weight: 600;
-  margin: 20px 0 8px;
-  color: var(--text);
+  font-family: var(--serif);
+  font-size: 15.5px;
+  font-weight: 500;
+  margin: 28px 0 9px;
+  color: var(--ink);
+  line-height: 1.55;
 }
-.md-body h3 a {
-  color: var(--accent);
-  text-decoration: none;
-  word-break: break-all;
-}
-.md-body h3 a:hover { text-decoration: underline; }
 
+.md-body h3 a {
+  color: var(--ink);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  padding-bottom: 1px;
+  transition: background-size 0.3s ease, color 0.2s;
+}
+
+.md-body h3 a:hover {
+  color: var(--accent);
+  background-size: 100% 1px;
+}
+
+.article-time {
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--ink3);
+  letter-spacing: 0.04em;
+}
+
+/* p: summary */
 .md-body p {
   font-size: 15px;
-  color: var(--text);
-  margin: 8px 0;
-  line-height: 1.75;
-}
-
-.md-body blockquote {
+  color: var(--ink2);
   margin: 10px 0;
-  padding: 10px 14px;
-  background: var(--accent-bg);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  font-size: 14px;
-  color: var(--text2);
+  line-height: 1.9;
+  font-weight: 300;
 }
-.md-body blockquote a { color: var(--accent); }
-.md-body blockquote p { font-size: 14px; color: var(--text2); margin: 0; }
 
-/* WeChat article links — show green WeChat badge */
+/* blockquote: original article link */
+.md-body blockquote {
+  margin: 14px 0 4px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.md-body blockquote p { margin: 0; }
+
+.md-body blockquote a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  color: var(--ink2);
+  text-decoration: none;
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  background: var(--surface);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.md-body blockquote a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--bg2);
+}
+
+/* WeChat icon on original links */
 .md-body blockquote a[href*="mp.weixin.qq.com"]::before {
   content: '';
   display: inline-block;
   width: 14px;
   height: 14px;
-  margin-right: 5px;
-  vertical-align: -2px;
+  flex-shrink: 0;
   background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2307c160' d='M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.295.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-3.895-6.348-7.601-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm4.843 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.142 2.45c-3.016 0-5.463 2.144-5.463 4.787 0 2.644 2.447 4.788 5.463 4.788.871 0 1.69-.179 2.434-.492a.748.748 0 0 1 .61.083l1.592.93a.28.28 0 0 0 .14.046.248.248 0 0 0 .248-.248.215.215 0 0 0-.04-.18l-.327-1.238a.505.505 0 0 1 .179-.558C21.525 15.368 22.5 13.77 22.5 12c0-2.643-2.447-4.559-6.73-3.559zm-2.6 2.237c.538 0 .974.444.974.99a.982.982 0 0 1-.975.99.982.982 0 0 1-.975-.99c0-.546.437-.99.975-.99zm5.2 0c.538 0 .975.444.975.99a.982.982 0 0 1-.975.99.982.982 0 0 1-.975-.99c0-.546.437-.99.975-.99z'/%3E%3C/svg%3E") center/contain no-repeat;
 }
 
+/* ul: no-update list */
 .md-body ul {
-  padding-left: 20px;
-  margin: 8px 0;
+  padding-left: 0;
+  list-style: none;
+  margin: 10px 0;
 }
-.md-body ul li { font-size: 15px; line-height: 1.7; color: var(--text2); }
 
+.md-body ul li {
+  font-family: var(--display);
+  font-size: 13px;
+  color: var(--ink3);
+  padding: 3px 0 3px 18px;
+  position: relative;
+  letter-spacing: 0.03em;
+}
+
+.md-body ul li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--rule);
+  font-family: var(--display);
+}
+
+/* hr: section divider */
 .md-body hr {
   border: none;
-  border-top: 1px solid var(--border);
-  margin: 24px 0;
+  margin: 44px 0;
+  height: 1px;
+  background: var(--rule2);
+  position: relative;
 }
 
-.md-body em { color: var(--text2); font-size: 13px; font-style: normal; }
+/* em: footer */
+.md-body > em,
+.md-body p > em {
+  display: block;
+  font-style: italic;
+  font-family: var(--display);
+  font-size: 12px;
+  color: var(--ink3);
+  text-align: center;
+  letter-spacing: 0.08em;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule2);
+}
 
-/* Date nav (prev/next) */
+/* ── date nav (prev/next) ── */
 .date-nav {
   display: flex;
-  justify-content: space-between;
-  margin-top: 40px;
-  gap: 12px;
+  align-items: stretch;
+  margin-top: 60px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+  gap: 1px;
+  background: var(--rule2);
+  border: 1px solid var(--rule2);
+  border-radius: var(--r);
+  overflow: hidden;
 }
+
 .date-nav a {
   flex: 1;
-  padding: 12px 16px;
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  padding: 16px 20px;
   text-decoration: none;
-  color: var(--accent);
-  font-size: 14px;
-  text-align: center;
-  transition: border-color 0.15s;
+  background: var(--surface);
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
-.date-nav a:hover { border-color: var(--accent); }
-.date-nav .placeholder { flex: 1; }
 
+.date-nav a:first-child { text-align: left; }
+.date-nav a:last-child  { text-align: right; }
+.date-nav a:hover { background: var(--bg2); }
+
+.date-nav a:first-child:last-child { text-align: left; }
+
+.date-nav .nav-dir {
+  font-family: var(--display);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--ink3);
+  text-transform: uppercase;
+}
+
+.date-nav .nav-date {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 300;
+  color: var(--accent);
+  letter-spacing: 0.03em;
+}
+
+.date-nav .placeholder {
+  flex: 1;
+  background: var(--surface);
+}
+
+/* ── responsive ── */
 @media (max-width: 480px) {
-  .index-hero h1 { font-size: 24px; }
-  .date-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .date-card { padding: 12px; }
-  .date-card .date-label { font-size: 16px; }
-  .container { padding: 16px 14px; }
-  .page-header h1 { font-size: 19px; }
-  .md-body h2 { font-size: 17px; }
+  .nav { padding: 0 14px; height: 48px; }
+  .masthead { padding: 40px 16px 36px; }
+  .date-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .date-card { padding: 14px 12px 12px; }
+  .card-day { font-size: 32px; }
+  .container { padding: 0 14px; }
+  .page-header { padding: 32px 0 28px; margin-bottom: 32px; }
+  .md-body h2 { font-size: 20px; margin-top: 40px; }
+  .md-body h3 { font-size: 15px; }
+  .md-body p  { font-size: 14.5px; }
+}
+
+@media (max-width: 360px) {
+  .date-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .card-day { font-size: 28px; }
 }
 `;
 
-// ── helpers ───────────────────────────────────────────────────────────────────
+// ── JS ────────────────────────────────────────────────────────────────────────
 
-const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
+const WECHAT_JS = `
+(function(){
+  var ua=navigator.userAgent;
+  var isMM=/MicroMessenger/i.test(ua);
+  var isAnd=/Android/i.test(ua);
+  document.querySelectorAll('a[href*="mp.weixin.qq.com"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var url=a.href;
+      if(isMM){e.preventDefault();window.location.href=url;return;}
+      if(isAnd){
+        e.preventDefault();
+        try{
+          var u=new URL(url);
+          window.location.href='intent://'+u.host+u.pathname+u.search
+            +'#Intent;scheme=https;package=com.tencent.mm;'
+            +'S.browser_fallback_url='+encodeURIComponent(url)+';end';
+        }catch(_){window.location.href=url;}
+      }
+    });
+  });
+})();
+`;
 
-function weekday(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
-  return `星期${WEEKDAYS[d.getDay()]}`;
-}
+const ARTICLE_JS = `
+// De-emphasize timestamps in article titles
+document.querySelectorAll('.md-body h3 a').forEach(function(a){
+  a.innerHTML=a.innerHTML.replace(
+    /（(\d{1,2}:\d{2})）/g,
+    '<span class="article-time">（$1）</span>'
+  );
+});
+// Highlight today's card on index
+var today=new Date().toISOString().slice(0,10);
+var card=document.querySelector('a[href="'+today+'.html"]');
+if(card)card.classList.add('today');
+`;
 
-function shell(html, { title, navExtra = '', back = true } = {}) {
-  const homeLink = back ? `<a href="index.html">← 首页</a>` : '';
+// ── shell ─────────────────────────────────────────────────────────────────────
+
+function shell(body, { title, back = true, navInfo = '' } = {}) {
+  const homeLink = back
+    ? `<a class="nav-home" href="index.html">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        首页
+      </a>
+      <div class="nav-sep"></div>`
+    : '';
+  const navInfoEl = navInfo ? `<span class="nav-info">${navInfo}</span>` : '';
+
   return `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title} — ${SITE_TITLE}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>${CSS}</style>
 </head>
 <body>
 <nav class="nav">
   ${homeLink}
-  ${homeLink && navExtra ? `<span class="nav-sep">·</span>` : ''}
-  ${navExtra}
-  <span class="nav-title">${SITE_TITLE}</span>
+  ${navInfoEl}
+  <span class="nav-brand">${SITE_TITLE}</span>
 </nav>
 <div class="container">
-${html}
+${body}
 </div>
-<script>
-(function () {
-  var ua = navigator.userAgent;
-  var isWeChat  = /MicroMessenger/i.test(ua);   // 微信内置浏览器
-  var isAndroid = /Android/i.test(ua);
-  // iOS: mp.weixin.qq.com 是微信 Universal Link，Safari 会自动拦截，无需干预
-
-  document.querySelectorAll('a[href*="mp.weixin.qq.com"]').forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      var url = a.href;
-
-      if (isWeChat) {
-        // 已在微信里：直接跳转，微信 WebView 会在内部打开文章
-        e.preventDefault();
-        window.location.href = url;
-        return;
-      }
-
-      if (isAndroid) {
-        // 普通 Android 浏览器：Intent URL 唤起微信 App
-        e.preventDefault();
-        try {
-          var u = new URL(url);
-          var intentUrl = 'intent://' + u.host + u.pathname + u.search
-            + '#Intent;scheme=https;package=com.tencent.mm;'
-            + 'S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
-          window.location.href = intentUrl;
-        } catch (_) {
-          window.location.href = url;
-        }
-      }
-    });
-  });
-})();
-</script>
+<script>${WECHAT_JS}${ARTICLE_JS}</script>
 </body>
 </html>`;
-}
-
-// Extract article count and account count from first 3 lines of MD
-function parseMeta(md) {
-  const match = md.match(/共\s*(\d+)\s*个账号.*?(\d+)\s*篇文章/);
-  if (match) return { accounts: match[1], articles: match[2] };
-  const artMatch = md.match(/(\d+)\s*篇文章/);
-  return { accounts: '?', articles: artMatch ? artMatch[1] : '?' };
 }
 
 // ── build ─────────────────────────────────────────────────────────────────────
 
 mkdirSync(SITE_DIR, { recursive: true });
 
-// Collect all date MD files (exclude -full suffix)
 const files = readdirSync(OUTPUT_DIR)
   .filter(f => /^wechat-digest-\d{4}-\d{2}-\d{2}\.md$/.test(f))
   .sort()
-  .reverse(); // newest first
+  .reverse();
 
 const dates = files.map(f => f.replace('wechat-digest-', '').replace('.md', ''));
 
 console.log(`Found ${files.length} digest files.`);
 
-// Build each date page
+// ── individual date pages ─────────────────────────────────────────────────────
+
 files.forEach((file, idx) => {
   const date = dates[idx];
+  const { year, month, day, monthEn, wd } = parseDate(date);
   const md = readFileSync(join(OUTPUT_DIR, file), 'utf8');
   const { accounts, articles } = parseMeta(md);
   const html = marked.parse(md);
@@ -306,49 +745,95 @@ files.forEach((file, idx) => {
   const next = idx > 0 ? dates[idx - 1] : null;
 
   const prevLink = prev
-    ? `<a href="${prev}.html">← ${prev}</a>`
+    ? `<a href="${prev}.html">
+        <span class="nav-dir">← 上一期</span>
+        <span class="nav-date">${prev}</span>
+      </a>`
     : `<div class="placeholder"></div>`;
+
   const nextLink = next
-    ? `<a href="${next}.html">${next} →</a>`
+    ? `<a href="${next}.html" style="text-align:right">
+        <span class="nav-dir">下一期 →</span>
+        <span class="nav-date">${next}</span>
+      </a>`
     : `<div class="placeholder"></div>`;
 
   const page = shell(`
-<div class="page-header">
-  <h1>${SITE_TITLE} · ${date}</h1>
-  <p class="meta">${weekday(date)} · ${accounts} 个账号 · ${articles} 篇文章</p>
+<div class="page-header fade-up">
+  <div class="page-header-eyebrow">${SITE_TITLE} · ${year}</div>
+  <div class="page-header-date">${monthEn} <em>·</em> ${day}</div>
+  <div class="page-header-wd">${wd}</div>
+  <div class="page-header-meta">
+    <span class="page-header-meta-item"><span class="meta-dot"></span>${accounts} 个账号</span>
+    <span class="page-header-meta-item"><span class="meta-dot"></span>${articles} 篇文章</span>
+  </div>
 </div>
-<div class="md-body">${html}</div>
-<nav class="date-nav">
+<div class="md-body fade-up delay-1">${html}</div>
+<nav class="date-nav fade-up delay-2">
   ${prevLink}
   ${nextLink}
 </nav>
-`, { title: date, navExtra: `<span style="font-size:14px;color:var(--text2)">${date} ${weekday(date)}</span>` });
+`, {
+    title: `${monthEn} ${day}, ${year}`,
+    back: true,
+    navInfo: `${date} ${wd}`,
+  });
 
   writeFileSync(join(SITE_DIR, `${date}.html`), page);
   console.log(`  ✓ ${date}.html  (${accounts} 账号, ${articles} 篇)`);
 });
 
-// Build index page
-const cards = files.map((file, idx) => {
-  const date = dates[idx];
-  const md = readFileSync(join(OUTPUT_DIR, file), 'utf8');
-  const { accounts, articles } = parseMeta(md);
-  return `<a class="date-card" href="${date}.html">
-  <span class="date-label">${date}</span>
-  <span class="date-meta">${accounts} 账号 · ${articles} 篇文章</span>
-  <span class="date-weekday">${weekday(date)}</span>
-</a>`;
-}).join('\n');
+// ── index page ────────────────────────────────────────────────────────────────
 
-const indexHtml = shell(`
-<div class="index-hero">
-  <h1>📰 ${SITE_TITLE}</h1>
-  <p>微信公众号每日摘要 · 共 ${files.length} 期</p>
-</div>
-<div class="date-grid">
+// Group by year
+const byYear = {};
+files.forEach((file, idx) => {
+  const date = dates[idx];
+  const { year } = parseDate(date);
+  if (!byYear[year]) byYear[year] = [];
+  byYear[year].push({ file, date, idx });
+});
+
+const yearGroups = Object.keys(byYear)
+  .sort((a, b) => b - a)
+  .map((year, yi) => {
+    const cards = byYear[year].map(({ file, date, idx }) => {
+      const { month, day, monthEn, wd } = parseDate(date);
+      const md = readFileSync(join(OUTPUT_DIR, file), 'utf8');
+      const { accounts, articles } = parseMeta(md);
+      return `<a class="date-card" href="${date}.html">
+  <span class="card-month">${monthEn}</span>
+  <span class="card-day">${day}</span>
+  <span class="card-weekday">${wd}</span>
+  <div class="card-meta">${articles} 篇 · ${accounts} 账号</div>
+</a>`;
+    }).join('\n');
+
+    const delay = yi < 3 ? ` delay-${yi + 1}` : '';
+    return `<div class="year-group fade-up${delay}">
+  <div class="year-label">${year}</div>
+  <div class="date-grid">
 ${cards}
+  </div>
+</div>`;
+  }).join('\n');
+
+const indexPage = shell(`
+<div class="masthead">
+  <div class="masthead-ornament">
+    <div class="masthead-ornament-diamond"></div>
+  </div>
+  <h1>${SITE_TITLE}</h1>
+  <div class="masthead-en">WeChat Public Account Digest</div>
+  <div class="masthead-rule">
+    <div class="masthead-rule-line thick"></div>
+    <div class="masthead-rule-gap"></div>
+    <div class="masthead-rule-line"></div>
+  </div>
+  <div class="masthead-meta">共 ${files.length} 期存档</div>
 </div>
+${yearGroups}
 `, { title: '首页', back: false });
 
-writeFileSync(join(SITE_DIR, 'index.html'), indexHtml);
+writeFileSync(join(SITE_DIR, 'index.html'), indexPage);
 console.log(`\n✅ Site built → ${SITE_DIR}/  (${files.length + 1} files)`);
