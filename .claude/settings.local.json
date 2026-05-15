@@ -10,5 +10,19 @@
       "Bash(claude *)",
       "Read(//c/Users/Administrator/.claude/**)"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash D:/privateProject/wechat-digest/.claude/auto-push-digest.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
   }
 }

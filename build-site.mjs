@@ -405,36 +405,33 @@ body {
 
 /* ── account section (h2) ── */
 .md-body h2 {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text);
-  padding: 18px 0 14px;
-  margin: 0;
-  border-bottom: 1px solid var(--border);
+  padding: 13px 16px;
+  margin: 0 -16px 4px;
+  background: rgba(192,96,26,.07);
+  border-left: 4px solid var(--accent);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0;
 }
 
-.md-body h2::before {
-  content: '';
-  display: inline-block;
-  width: 3px;
-  height: 18px;
-  background: var(--accent);
-  border-radius: 2px;
-  flex-shrink: 0;
-}
+.md-body h2::before { display: none; }
 
-.md-body h2:first-child { padding-top: 20px; }
+.md-body h2:first-child { margin-top: 0; }
+
+@media (prefers-color-scheme: dark) {
+  .md-body h2 { background: rgba(192,96,26,.13); }
+}
 
 /* ── article title (h3) ── */
 .md-body h3 {
-  font-size: 15.5px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--text);
-  margin: 16px 0 8px;
-  line-height: 1.5;
+  margin: 18px 0 8px;
+  line-height: 1.55;
 }
 
 .md-body h3 a {
