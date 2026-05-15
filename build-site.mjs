@@ -236,23 +236,34 @@ ${html}
 </div>
 <script>
 (function () {
-  // Android: use Chrome Intent URL to open mp.weixin.qq.com links directly in WeChat
-  // iOS: Universal Links intercept mp.weixin.qq.com natively — no JS needed
-  if (!/Android/i.test(navigator.userAgent)) return;
+  var ua = navigator.userAgent;
+  var isWeChat  = /MicroMessenger/i.test(ua);   // 微信内置浏览器
+  var isAndroid = /Android/i.test(ua);
+  // iOS: mp.weixin.qq.com 是微信 Universal Link，Safari 会自动拦截，无需干预
 
   document.querySelectorAll('a[href*="mp.weixin.qq.com"]').forEach(function (a) {
     a.addEventListener('click', function (e) {
-      e.preventDefault();
       var url = a.href;
-      try {
-        var u = new URL(url);
-        // intent://mp.weixin.qq.com/s?...#Intent;scheme=https;package=com.tencent.mm;end
-        var intentUrl = 'intent://' + u.host + u.pathname + u.search
-          + '#Intent;scheme=https;package=com.tencent.mm;'
-          + 'S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
-        window.location.href = intentUrl;
-      } catch (_) {
+
+      if (isWeChat) {
+        // 已在微信里：直接跳转，微信 WebView 会在内部打开文章
+        e.preventDefault();
         window.location.href = url;
+        return;
+      }
+
+      if (isAndroid) {
+        // 普通 Android 浏览器：Intent URL 唤起微信 App
+        e.preventDefault();
+        try {
+          var u = new URL(url);
+          var intentUrl = 'intent://' + u.host + u.pathname + u.search
+            + '#Intent;scheme=https;package=com.tencent.mm;'
+            + 'S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+          window.location.href = intentUrl;
+        } catch (_) {
+          window.location.href = url;
+        }
       }
     });
   });
