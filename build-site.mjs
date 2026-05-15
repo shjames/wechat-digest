@@ -34,14 +34,14 @@ const CSS = `
   --bg2:      #ede8db;
   --surface:  #faf7f0;
   --ink:      #1d1912;
-  --ink2:     #6b6258;
-  --ink3:     #a89e94;
+  --ink2:     #4e473f;
+  --ink3:     #9a9088;
   --accent:   #b83224;
   --accent2:  #d4574a;
   --rule:     #d8d0c2;
   --rule2:    #e8e2d6;
   --serif:    'Noto Serif SC', 'Songti SC', 'Source Han Serif SC', 'SimSun', Georgia, serif;
-  --display:  'Cormorant Garamond', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --display:  'Playfair Display', 'Georgia', 'Times New Roman', serif;
   --max-w:    740px;
   --r:        3px;
 }
@@ -52,8 +52,8 @@ const CSS = `
     --bg2:     #1c1812;
     --surface: #171410;
     --ink:     #ede5d6;
-    --ink2:    #a09484;
-    --ink3:    #6a6055;
+    --ink2:    #c0b0a0;
+    --ink3:    #7a7060;
     --accent:  #d4826a;
     --accent2: #e09a82;
     --rule:    #2c2820;
@@ -476,7 +476,7 @@ body {
   color: var(--ink2);
   margin: 10px 0;
   line-height: 1.9;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 /* blockquote: original article link */
@@ -702,7 +702,7 @@ function shell(body, { title, back = true, navInfo = '' } = {}) {
 <title>${title} — ${SITE_TITLE}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Serif+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Serif+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>${CSS}</style>
 </head>
 <body>
@@ -739,7 +739,13 @@ files.forEach((file, idx) => {
   const { year, month, day, monthEn, wd } = parseDate(date);
   const md = readFileSync(join(OUTPUT_DIR, file), 'utf8');
   const { accounts, articles } = parseMeta(md);
-  const html = marked.parse(md);
+  // Strip redundant H1, meta blockquote, and leading HR from MD
+  // (the page already has a custom header section)
+  const mdBody = md
+    .replace(/^# [^\n]+\n+/, '')
+    .replace(/^> 共[^\n]+\n+/, '')
+    .replace(/^---\n+/, '');
+  const html = marked.parse(mdBody);
 
   const prev = idx < dates.length - 1 ? dates[idx + 1] : null;
   const next = idx > 0 ? dates[idx - 1] : null;
