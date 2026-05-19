@@ -257,6 +257,7 @@ async function main() {
                       title: info.title,
                       content: (info.content || "").slice(0, 600),
                       reviewId: sub.reviewId,
+                      mpUrl: info.originalId ? "https://mp.weixin.qq.com/s/" + info.originalId : "",
                       time: ts,
                       timeStr: hh + ":" + mm,
                       readNum: info.readNum || 0,
