@@ -293,21 +293,84 @@ async function main() {
       }
     }
 
-    // 4.5 验证码检测
+    // 4.5 验证码检测与自动处理
     const errCodes = Object.values(errors);
     const captchaCount = errCodes.filter(e => e === -2041 || e === "-2041").length;
     const totalErrors = errCodes.length;
-    if (captchaCount > 0 && captchaCount === totalErrors) {
-      log("");
-      log("╔════════════════════════════════════════╗");
-      log("║  全部账号返回 -2041（需要验证码）       ║");
-      log("║                                        ║");
-      log("║  请在 Chrome 中打开 weread.qq.com       ║");
-      log("║  进入任意公众号文章页面完成验证码        ║");
-      log("║  然后重新运行 fetch.mjs                 ║");
-      log("╚════════════════════════════════════════╝");
-    } else if (captchaCount > 0) {
-      log(`⚠️ ${captchaCount}/${totalErrors} 个账号需验证码，可在 Chrome 中完成验证后重试`);
+    if (captchaCount > 0) {
+      log(`⚠️ 检测到 ${captchaCount} 个账号返回 -2041，尝试自动处理验证码...`);
+
+      // 尝试自动处理验证码：激活 tab 到前台，导航到文章页，检测验证码弹窗
+      const captchaDone = await (async () => {
+        try {
+          // 激活 tab 到前台（验证码弹窗只在前台渲染）
+          await cdp(`/activate?target=${targetId}`);
+          await new Promise(r => setTimeout(r, 500));
+
+          // 找一个有 readerUrl 的账号，导航到文章页触发验证码
+          const readerUrl = Object.values(readerUrls)[0];
+          if (readerUrl) {
+            log(`导航到文章页触发验证码: ${readerUrl.slice(0, 60)}...`);
+            await cdp(`/navigate?target=${targetId}&url=${encodeURIComponent(readerUrl)}`);
+            await new Promise(r => setTimeout(r, 4000));
+          }
+
+          // 检测验证码弹窗（weread 使用 .ui-half-page-dialog 或 .wr_dialog）
+          for (let i = 0; i < 5; i++) {
+            const dialogInfo = await cdpEval(targetId, `(() => {
+              const selectors = ['.ui-half-page-dialog', '.wr_dialog', '#TDCaptcha', '[id*="captcha"]'];
+              for (const sel of selectors) {
+                const el = document.querySelector(sel);
+                if (el && el.offsetParent !== null) {
+                  return JSON.stringify({ found: true, sel, text: (el.innerText||'').slice(0,80) });
+                }
+              }
+              const txt = document.body.innerText || '';
+              if (['安全验证','请完成验证','点击验证','滑动验证','人机验证'].some(kw => txt.includes(kw))) {
+                return JSON.stringify({ found: true, sel: null, keyword: true });
+              }
+              return JSON.stringify({ found: false });
+            })()`);
+
+            let info;
+            try { info = typeof dialogInfo === "string" ? JSON.parse(dialogInfo) : dialogInfo; } catch { info = {}; }
+
+            if (info.found) {
+              log(`检测到验证码弹窗: ${JSON.stringify(info)}`);
+              // 尝试点击确认/验证按钮
+              const clicked = await cdpEval(targetId, `(() => {
+                const btns = Array.from(document.querySelectorAll('button, [role="button"], .wr_btn, .confirm-btn'));
+                for (const btn of btns) {
+                  const txt = (btn.textContent || '').trim();
+                  if (txt && (txt.includes('验证') || txt.includes('确认') || txt.includes('完成'))) {
+                    btn.scrollIntoView({ block: 'center' });
+                    btn.click();
+                    return '点击: ' + txt;
+                  }
+                }
+                return null;
+              })()`);
+              if (clicked) { log(`自动操作: ${clicked}`); await new Promise(r => setTimeout(r, 2000)); return true; }
+            }
+            await new Promise(r => setTimeout(r, 3000));
+          }
+          return false;
+        } catch (e) {
+          log(`自动处理验证码异常: ${e.message}`);
+          return false;
+        }
+      })();
+
+      if (!captchaDone && captchaCount === totalErrors) {
+        log("");
+        log("╔════════════════════════════════════════╗");
+        log("║  全部账号返回 -2041（需要验证码）       ║");
+        log("║                                        ║");
+        log("║  请在 Chrome 中打开 weread.qq.com       ║");
+        log("║  进入任意公众号文章页面完成验证码        ║");
+        log("║  然后重新运行 fetch.mjs                 ║");
+        log("╚════════════════════════════════════════╝");
+      }
     }
 
     // 5. 组装输出
