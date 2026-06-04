@@ -22,13 +22,13 @@
 
 某公司老板宣称对在招聘网站活跃的员工"零容忍"，随即走人，却适得其反——私下统计发现90%的员工本就有离职念头。作者指出，老板将"活跃"等同于"不忠"是根本误区，许多员工逛招聘网站不过是了解市场行情、留条后路，这属于人之常情。这种监控式管理本质是不信任，反而将犹豫中的员工推向彻底离职。真正留住人才的根本在于提供合理薪资、成长空间和舒适环境，而非靠威胁控制——"治标不治本"的管控只会加速人才流失。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/byI9gbj7FCU99fMcaveDIg)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzI0NjYzNzY5Mw==&mid=2247627190&idx=1&sn=4f37ec1c054ce96b3503c9b23d72efa2&chksm=e825e503d978a8637d872698e2e492758fa9779b90fa4e094600c2936b61101bef3e7ae44d85#rd)
 
 ### [英伟达GPU控制面板没了 发布20年后终将被弃用（19:59）](https://weread.qq.com/web/mp/reader/MP_WXS_3246637693_pfIuUBNXIMijvk-uvwGLWA)
 
 服役20年后，英伟达宣布随610.47及更高版本驱动正式弃用经典NVIDIA控制面板，原因是所有功能已迁移至2025年推出的新版英伟达配套应用。安装最新驱动时旧版控制面板将被自动卸载，右键菜单和托盘图标也一并移除；已安装的用户若不升级可继续使用，若重装驱动则不再附带。英伟达表示新版配套应用功能更全、运行更快，并将在微软商店继续提供旧版以照顾有特殊需求的用户；使用RTX PRO专业显卡的用户暂时可继续使用旧版，待功能迁移完成后也将一并停用。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/pfIuUBNXIMijvk-uvwGLWA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzI0NjYzNzY5Mw==&mid=2247627190&idx=2&sn=91518f0a6d24d0d8437e129c462267be&chksm=e868cc3ddcb3124f2cb73813b67b9c21b9caa83c40ca6d218d8d8359c5a5a874ed3c3631558c#rd)
 
 ---
 
@@ -38,25 +38,25 @@
 
 复旦系科创企业眸深智能正式发布STI-WM时空一体世界动作模型，专为机器人原生打造，以时空一体化建模、物理一致性约束、端到端原生融合为核心，解决现有VLA模型空间感知不足、物理逻辑缺失、长时序规划薄弱等痛点。团队历经五年研发，核心成员来自复旦大学及英特尔、英伟达，斩获CVPR、IJCAI等多项国际顶尖荣誉。该模型支持多模态感知输入、百秒级长时程规划与在线闭环纠偏，并具备端侧轻量化部署和小样本泛化能力。公司已完成3亿元Pre-A轮融资，并与宇树科技、禾川科技等头部企业达成深度合作。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/lME790957~LWTrngtGV~Hg)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247893880&idx=1&sn=62985b132c123bdecf8f5635fd585ecd&chksm=e98cb428ccf46add5fcbb54b5198f73a7077d3e03799a89c819d8437f9822a351233b598fba6#rd)
 
 ### [英伟达版「MacBook Pro」曝光：老黄自研了CPU！（13:00）](https://weread.qq.com/web/mp/reader/MP_WXS_3236757533_p4yLGc34UHybof0SLcHP1A)
 
 英伟达官号发布神秘帖子暗示将在台北Computex发布搭载自研N1X芯片的AI笔记本，微软和ARM同日呼应，三方联手亮牌。N1X被视为英伟达版M系列芯片，传闻规格包括20核ARM CPU、6144个CUDA计算单元及128GB统一内存，系与联发科合作、台积电N3B制程，支持Windows on Arm系统。受制于CPU/GPU共享LPDDR5X内存带宽不足，游戏性能有限，但本地AI推理能力突出。作者将AI主机类比为古腾堡印刷机，认为这类设备有望让普通人以接近零边际成本的方式运行本地AI，推动算力普惠化。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/p4yLGc34UHybof0SLcHP1A)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247893880&idx=2&sn=c644d0e9f0d84f172a16345899ba028b&chksm=e92e684e3cbf815d2241857d03ad70d684d4a3b8fec697a7249ec28987fb6701ab6ee5be313f#rd)
 
 ### [别光给Agent加Tool了，它根本选不明白！复旦×通义提出全新CUA训练范式（13:00）](https://weread.qq.com/web/mp/reader/MP_WXS_3236757533_Ws1o8K6Dxkb~Hjd7aOg~Lg)
 
 复旦大学与通义实验室联合提出ToolCUA，针对GUI-Tool混合动作空间中Agent"选路困惑"的核心问题——直接给强模型接入工具反而导致准确率下降。ToolCUA通过两阶段训练解决：首先合成交错GUI-Tool轨迹数据并进行Warmup SFT及单步RL，让模型学会工具调用基础；其次通过Online Agentic RL与工具效率路径奖励，使模型真正掌握何时用GUI、何时切换Tool的动态决策能力。ToolCUA-8B在OSWorld-MCP上以46.85%准确率超越Claude-4-Sonnet，代码与模型权重已全面开源。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/Ws1o8K6Dxkb~Hjd7aOg~Lg)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247893880&idx=3&sn=3801eccb44a75d9e72fc8da3c199f2a3&chksm=e9a492ce27e0ecd129c7b38d38d1127147f8480a39e236ea04bd4063d634d01ab97ad4cb9922#rd)
 
 ### [量子位编辑作者招聘（13:00）](https://weread.qq.com/web/mp/reader/MP_WXS_3236757533_I53mzm2dtB7lmVQe4iDLuA)
 
 量子位发布编辑部招聘启事，面向AI产业、AI财经商业、AI产品三大方向，覆盖编辑、主笔、主编各层级，社招与应届校招均开放，工作地点为北京中关村。岗位要求应聘者具备对应方向的专业背景与内容创作能力，并提供行业顶薪、五险一金及一对一导师指导等福利。量子位目前微信公众号订阅用户超240万，全网用户超700万，是AI及前沿科技领域TOP1新媒体。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/I53mzm2dtB7lmVQe4iDLuA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247893880&idx=4&sn=433db2c6bd7c0d6bfeda26a02c3bbbbd&chksm=e9a7f1048ac10184a7571d944e26c32861ba0a717feebc02c3a27aab9009785745cc7608b35c#rd)
 
 ---
 
@@ -66,25 +66,25 @@
 
 文章援引环境心理学观点，指出物理空间是心理空间的投影，居家环境中的某些物品会在无形中消耗人的精力与情绪能量。心理学专家切丽尔·理查德森认为，当物理空间为人"减负"时，精神空间才能获得真正滋养，对精力阈值较低、容易心累的人尤为重要。家应成为"回血舱"而非需要维持完美的战场，主动为生活空间做减法，本质是为灵魂留出可以自由呼吸的余地，有助于整理内心世界、安顿身心。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/mCAXL4NKD3dvyeSMHGYo~A)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzU2ODI5ODMzNg==&mid=2248010239&idx=1&sn=8c7f9423865f75aac7d6a81519c93592&chksm=fdd4fc6e3704f5d931c94120c67a12da7b45ec2ee19be2375b3f621d94f24a3f36498f634222#rd)
 
 ### [你的潜意识里，住着哪种动物 | 测测你的隐藏天赋（12:30）](https://weread.qq.com/web/mp/reader/MP_WXS_3568298336_RoXNQhPWQ8UnNDKWtn0zWA)
 
 文章通过一个女职员在快节奏公司大放异彩、在传统企业却陷入自我怀疑的故事，引出"动物天性"与天赋适配的概念：每个人内心都蕴藏着一种原始生命力，顺应天性则能量爆发，压抑天性则内耗深重。文章援引温尼科特的心理学观点，强调发现隐藏天性才能释放原始潜能，并介绍了武志红×看见心理联合研发的"动物性格测试"，融合客体关系、霍妮精神分析及荣格人格原型等理论，旨在帮助用户认清自我天性、走出内心枷锁、活出生命活力。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/RoXNQhPWQ8UnNDKWtn0zWA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzU2ODI5ODMzNg==&mid=2248010239&idx=2&sn=37be8810e6f0af4a777380c7091870b6&chksm=fd6b532708d218c917a82c43534d1db71ff965be7831ed71a88d690dff47edbd539dc68b60ba#rd)
 
 ### [消费型快乐给的越多，孩子越难带（12:30）](https://weread.qq.com/web/mp/reader/MP_WXS_3568298336_ei93vLF-cMleSJwDn0UcJw)
 
 文章围绕"快乐阈值"这一心理学概念展开，指出当孩子长期被玩具、游戏、旅行等消费型刺激喂养时，大脑对快乐的需求门槛不断拉高，反而越来越难感到满足、动辄说"无聊"。作者通过多个真实案例指出，父母往往是出于自身心理补偿而非孩子真实需求去买买买；真正有价值的快乐来自需要付出努力才能获得的事情——爬山、阅读、种植——这类活动有助于孩子保持较低的快乐阈值，从而拥有持久的内在幸福感，而非依赖外部消费刺激。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/ei93vLF-cMleSJwDn0UcJw)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzU2ODI5ODMzNg==&mid=2248010239&idx=3&sn=d19d3ec68a507af8fedfc9a21cff2e4f&chksm=fd669b492ac5055fa499466d9cef1c6327dff7eb35ac187c0550ce4194f97a74739950c09d25#rd)
 
 ### [原生家庭的6种隐形伤害，你中了哪几种（12:30）](https://weread.qq.com/web/mp/reader/MP_WXS_3568298336_i2obpGV-b5cAdpYxPu3yUg)
 
 文章指出，许多成年人虽在物理空间上已离开原生家庭，但其思维模式、情感习惯与人际互动方式仍深受原生家庭影响，常以难以察觉的方式制约当下的幸福与选择。关键不在于彻底"摆脱"原生家庭，而在于与之建立清晰舒适的边界，并从中汲取积极资源。为此，武志红心理专业测评团队推出"原生家庭侵入度测试"，融合精神分析、萨提亚、客体关系等多种流派理论，从责任边界、情绪边界、情感支持等六个维度评估原生家庭对当下生活的真实影响，帮助用户实现自我探索与成长。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/i2obpGV-b5cAdpYxPu3yUg)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzU2ODI5ODMzNg==&mid=2248010239&idx=4&sn=20ce2a029b995a4a958ba3788e1ade75&chksm=fda67155bf4fdc37c488cc057783f8e54c45b63403412823d059d7a457096a7daab1b79df57b#rd)
 
 ---
 
@@ -94,37 +94,37 @@
 
 北京昌平职业学校凌晨排起上千人长队的景象揭示了中职教育的逆转：曾被视为"兜底选择"的中职如今出现热门专业20:1的报录比。背后原因是多元的：职教升学通道不断打通（贯通培养、对口高考等），部分家长主动为子女选择职校以规避高考压力，非京籍家庭的现实考量，以及生育高峰带来的生源竞争加剧。记者通过多个家庭的真实经历，呈现了这场由"招不满"到"抢着进"的转变背后，家长群体对升学路径、教育性价比与子女身心健康的重新权衡。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/jIAZSDt4E0Ff4qQffm~qMg)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MTc5MTU3NTYyMQ==&mid=2651582154&idx=1&sn=3b44f6ccf613aae79dc954735e3e9018&chksm=58b99c099a7194ccbc53379236b9746ceff69c66f4debd9d4b1dd1c740071fc1a340b47f4599#rd)
 
 ### [中国年轻人，为什么集体掉进了"鸟门"？（21:00）](https://weread.qq.com/web/mp/reader/MP_WXS_1791575621_KWEX1H6Arb0BcK0I3cFkhg)
 
 观鸟正在成为都市年轻人的新晋户外潮流，抖音相关话题播放量突破10亿次，小红书浏览量超8.2亿次。文章深入剖析了这股"鸟门"热潮的驱动力：不知不觉间完成两万步的轻量运动属性，望远镜带来的心流状态和大脑全程清空体验，以及一种区别于喧哗社交的"沉默式亲密"——两人共享一段观鸟体验，无需展示自我。文章同时揭示了观鸟消费的无底洞特性，从入门望远镜到数十万元的顶级镜头系统，以及日益商业化的周边生态，折射出年轻人寻找精神安放与意义感的时代心理。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/KWEX1H6Arb0BcK0I3cFkhg)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MTc5MTU3NTYyMQ==&mid=2651582154&idx=2&sn=44e734f81b3ee06e4e824374ba5ba7e9&chksm=587fa12053f6ca8ea34e36f2bb3febcf762fbd11e36ee515d31f42095549819db2cf67b2c0e1#rd)
 
 ### [8天7夜，这也许是孩子离敦煌和"火星"最近的一个暑假（21:00）](https://weread.qq.com/web/mp/reader/MP_WXS_1791575621_l5SaSr68cD3w2SmQ90YyKQ)
 
 人民文学出版社联合甘肃演艺集团、冷湖火星小镇推出"敦煌-冷湖科幻文学探索营"，面向9-15岁青少年，8天7夜横跨人文与科幻两大主题。前三天在敦煌亲绘飞天壁画、制作汉代简牍、探索鸣沙山月牙泉；后四天前往被《中国国家地理》评为"地球上最像火星的地方"的冷湖，开展雅丹徒步、参观东半球顶级天文台并体验太空舱生活。知名科幻作家刘洋、宝树、江波、梁清散担任创作导师，师生配比高达1:5，旨在将科幻阅读与极致自然体验融为一体。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/l5SaSr68cD3w2SmQ90YyKQ)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MTc5MTU3NTYyMQ==&mid=2651582154&idx=3&sn=60bca0929b6f88ef302e220c1ee4cee8&chksm=5897fec7761bf94f82405d445ac00653221e305adcfe0caf7beac89a1af73eef5de632085046#rd)
 
 ### [走红全球的大尺度神剧，为何难逃烂尾结局？（12:01）](https://weread.qq.com/web/mp/reader/MP_WXS_1791575621_8YMkHTsDwyvtCEa87CSX~Q)
 
 《黑袍纠察队》前三季凭借反超英叙事、对资本主义景观社会的深刻讽刺和"巨婴整活王"祖国人积累了高口碑，但第四、五季评分断崖下跌，成为典型烂尾美剧。文章从"景观社会"理论切入，分析该剧以超英商品化为核心的批判精神，指出后期创作滑向了它所批评的对象——资本逻辑。第四季大量插入与主线无关的支线剧情，并沉溺于对现实政治的符号化影射，使批判流于表面、剧情注水严重；而导致这一切的根本原因，正是无休止追求利润的商业大手。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/8YMkHTsDwyvtCEa87CSX~Q)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MTc5MTU3NTYyMQ==&mid=2651582124&idx=1&sn=65dd31adf30d84dbef56307ee97a5715&chksm=58c24bb5c8f94b8a06f37e0ddc77234c9b98830c18e723aecab74b785edcaab77c729a23f407#rd)
 
 ### [马头岩水仙，是"活"的茶！（12:01）](https://weread.qq.com/web/mp/reader/MP_WXS_1791575621_Tg7ndiq7NVSsBqV6R9lMmw)
 
 文章以作者亲赴武夷山正岩产区实地走访为引，追溯水仙茶的源流与历史，辨析其与北宋北苑贡茶的薄弱关联，并探讨正岩茶以"活"为首要标准的品评体系。文章指出，肉桂因高香易获市场青睐而价格飞涨，大量正岩茶园正在改种，导致以醇厚见长的水仙日趋稀缺。三联爱茶出品的"马头岩水仙"历经八个月三道炭焙工艺，在充分日照的马头岩山场底子上提炼出幽幽兰香与醇和汤感，体现了闽北岩茶"焙火见长"的传统工艺精髓与"活甘清香"的评茶核心。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/Tg7ndiq7NVSsBqV6R9lMmw)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MTc5MTU3NTYyMQ==&mid=2651582124&idx=2&sn=db37133848001a4bb2fce52205ad1584&chksm=58affb20c5e3befde81174b88cad4e4c71e6e3440eb7680f391f4d48410f540076d3bc89996c#rd)
 
 ### [夏天，怎么能不看TA啊？？？（12:01）](https://weread.qq.com/web/mp/reader/MP_WXS_1791575621_hxFPFRJ~6hSro~-YghLYhw)
 
 三联生活周刊编辑部推出"小满阅读福袋3.0"，由豆瓣阅读量5662本的知名书评人马凌与编辑部共同精选2026年度三本新书，方向分别覆盖光影艺术美学、文学大师人生沉浮与职场现实百态，其中一本附有作者亲笔签名。福袋另附《马凌·读书笔记体验课》及定制卡片，限量500套纯手工打包，定位初夏松弛阅读氛围，旨在为读者提供安静放空的精神口粮。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/hxFPFRJ~6hSro~-YghLYhw)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MTc5MTU3NTYyMQ==&mid=2651582124&idx=3&sn=aa040789f71d60edb80ac81c26a5333e&chksm=58a5882651aa8dd9fcd307e34bab6c9369519264dd6ac64b2bec1f0eaf53d0a8fcb857dce057#rd)
 
 ---
 
@@ -134,7 +134,7 @@
 
 文章围绕"毒物兴奋效应"（hormesis）展开，核心论点是：可控的急性高强度压力能激发身体与心智的超补偿机制，使人变得更强韧。身体层面的应用包括力竭训练（接近力竭的短组数即可显著增肌）、HIIT、冷热暴露、间歇性禁食等；心智层面包括90-120分钟深度工作、刻意练习中主动挑战失败边界、暴露疗法以及故意注入随机性训练适应不确定性。塔勒布的"杠铃策略"——大部分时间低强度活动加偶尔极端高强度挑战——贯穿始终，结论是：颤抖和恐惧的那一刻，正是人变得更强大的时刻。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/52mYwPwK~oVCIEC-xye-gQ)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5ODAyMjg3Ng==&mid=2650759712&idx=1&sn=4f20e878c23f948c46cf0a4182350ae5&chksm=bf0eacadedc06857a16136c063f6a4a3cc592656caa8e34d0f9b0c5ad0e1207a51bd31275668#rd)
 
 ---
 
@@ -144,7 +144,7 @@
 
 和菜头在2026年5月31日以散文祈愿词的形式写就，以"成为人极不容易、作为自己极不容易"为开篇，层层递进展开祈愿：祈愿所有人认清真实的自己，如满月般发现内心的天然圆满；祈愿身无病苦、心离烦忧，以获得沉静思考的基础；祈愿护持内心最细微的善念，让柔软取代苦痛；祈愿每个人对自己的善良本质拥有信心，相信潜藏于内的参天大树终会破种而出，成长为自己原本应有的样子。文字沉静内敛，契合满月之夜的主题。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/V2aqaB2He6~CXzZlRDNNqQ)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5MjAzODU2MA==&mid=2652808737&idx=1&sn=88994198024bba2692f429b4b8a32cc4&chksm=bc49c219eaffb6fed586cd7ddac3e6b5503aaac3fe30bd97e23d0c70f5db4ca249277d46bd0d#rd)
 
 ---
 
@@ -154,7 +154,7 @@
 
 香帅以一天的交流碎片为素材，串联起当下最关键的几条宏观线索：股市资金清晰集中于AI硬件资产，消费板块持续遭冷落；中美两国消费者信心均处低位；更深层的是全球主要经济体人口年龄中位数的急剧老化——中日韩分别从20出头老龄化至40/50岁，这一"物理意义上的老去"将从结构层面长期压制消费与金融扩张，并可能使美国当前通胀难以持续。文末预告晚间市场小课将讨论大类资产脉络、美伊谈判、中国楼市高频数据及美联储政策预期等议题。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/1OBy5zeHSvs2wSkDJ-LbWQ)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzU5MzA3ODIyMw==&mid=2247543035&idx=1&sn=a9d4d8273c63181c600bd266ce2b37f3&chksm=ffffdb2f27a34d119e9baac41f919e7cd2716cd5f6aa7f476d813d39f85f936a86911f1514d1#rd)
 
 ---
 
@@ -164,13 +164,13 @@
 
 硅星人介绍五个面向AI原生组织协作的新兴产品：Helio将AI设计为拥有邮箱、日历、任务权限的真实"员工"，配套三重治理护栏解决人机信任问题；Bloome专为多Agent群聊协作设计，从协议层原生支持权限与上下文；Lucius.ai让AI长期驻扎在现有IM群聊中积累组织记忆，无需迁移工具；MemoraX通过Agentic RL将记忆能力内化进模型本身；Sentra构建动态组织知识图谱，主动为会议生成上下文与状态报告。五款产品共同指向一个核心问题：当AI成为组织成员，协作基础设施需要彻底重构。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/NTagGpwHuVsAyPuQqnOa-w)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzkyNjU2ODM2NQ==&mid=2247629237&idx=1&sn=58996955e920f84485b6c07c54c4b68f&chksm=c3d3064ab8955bb8141cd853ed7871f8e3098447a563f3df2af25744e850b6c7fe774513a98d#rd)
 
 ### [中国版 Anthropic 是个伪命题（10:14）](https://weread.qq.com/web/mp/reader/MP_WXS_3926568365_gP9wx~0Xwm-H0K1hQ6MF~A)
 
 Anthropic完成H轮融资，投后估值9650亿美元，其逻辑不只是模型强，而是通过Claude Code、Cowork及行业插件三步走，系统性收割原本流向Salesforce等SaaS巨头的企业软件预算，引发全球软件股蒸发1.6万亿美元市值。"中国版Anthropic"叙事在一级市场升温，但文章通过数据剖析指出：中美之间存在200倍的收入绝对差距，根源不在于模型能力差距，而在于中国SaaS市场池子本身就只有80亿美元（美国同类单家公司收入的六分之一），加之企业软件采购偏向定制部署而非订阅制，价格战导致Token成为标品，AI编程工具收费仅为美国的五分之一到二十分之一，"中国版Anthropic"的商业逻辑在本质结构上难以复制。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/gP9wx~0Xwm-H0K1hQ6MF~A)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzkyNjU2ODM2NQ==&mid=2247629237&idx=2&sn=dbf8124d94493eadb69c55f261e60438&chksm=c365246b18134d505cfa4930b2997ae9663a447abbd0bc8b3954b36a235fd6af8b9c8d5d0bab#rd)
 
 ---
 
@@ -186,13 +186,13 @@ Anthropic完成H轮融资，投后估值9650亿美元，其逻辑不只是模型
 
 文章解读《人生十二法则》，核心论点是：很多人的痛苦源于长期逃避与向外推责，而非世界本身的不公。作者援引彼得森"地毯下的龙"隐喻，指出回避问题不会带来和平，只会在黑暗中蓄养灾难；又以龙虾血清素实验说明，挺直腰板的物理姿态能从神经层面重建自信。文章同时批驳"伪善的包容"——无论是容忍消耗自己的损友、还是对孩子无底线迁就，都是把管教责任推给更残酷的社会；真正的成熟，是停止抱怨、向内扛起责任，并以言辞精确将模糊问题摆上桌面直面解决。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/CenQBDuNNTsYprgJRqL7og)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5NjAxOTU4MA==&mid=3009370341&idx=1&sn=c18b0d5d7b28498ce8a8b80b109dea37&chksm=9190900cd936b33073f7868704a120fd008c4fb3c78ea7471b3fd6d192e791356a29e7bd11e8#rd)
 
 ### [靠自学可以成为高手吗？（06:31）](https://weread.qq.com/web/mp/reader/MP_WXS_2396019580_u1nTeAjWJ4OnOmQd78AFxA)
 
 万维钢以刻意练习理论为框架，指出并非所有领域都适合自学：网球、外科手术等"训练手"的领域高度依赖教练和正规反馈，门槛极高；但写作、商业管理、领导力等"训练眼"和"训练心"的领域，因反馈周期长、没有标准打法，刻意练习优势有限，反而更适合依靠悟性自学。结论是：与其在依赖正规训练的赛道上硬撑，不如主动选择一个自学可以奏效的领域，以个人感知敏感度和神经网络可塑性为核心优势，在没有明确标准答案的地方建立差异化竞争力。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/u1nTeAjWJ4OnOmQd78AFxA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5NjAxOTU4MA==&mid=3009370341&idx=2&sn=11f576143a8ff3dff6972ee66f331387&chksm=9135ff8ec9dd6b66ed91c7a47cad72aeb53b8046b0bd5ffc81d95e22f367f055ec3677f4879f#rd)
 
 ---
 
@@ -208,13 +208,13 @@ Anthropic完成H轮融资，投后估值9650亿美元，其逻辑不只是模型
 
 科技史学者张笑宇以全要素生产率数据为基础，指出工业革命存在"上下半场"：前两次工业革命的核心是"延长产业链"，每一个新产品催生海量就业；而第三次工业革命的本质是"缩短产业链"，自动化消灭的岗位远超新增岗位，优质就业高度集中于高学历门槛行业，社会随之进入老龄化与消费收缩通道。AI的迭代速度更是打破了代际缓冲机制——博士读完，能力已被超越，历史上从未出现过的"速度错位"将把工业社会下半场的逻辑推向极端，最终可能将人类带入彼得·蒂尔所预言的"高级中世纪"。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/bQH0ehl9ImoRC4E4Po-Xzg)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIxNTAzNzU0Ng==&mid=2654905553&idx=1&sn=6bdf29dde4af4af18e8bb61496a5658c&chksm=8dc19fc98df39a10133ee58c9e032306b12b92a7e5cb0f29c054bf9e67514ea3e6dd85089b07#rd)
 
 ### [马斯克说对了，体力是AI最难夺走的东西：运动为何成为人类最后的保护色？（21:41）](https://weread.qq.com/web/mp/reader/MP_WXS_3215037546_IVqtw6wOkG5IWfsRMQ9HGQ)
 
 文章以墨西哥拉拉穆里族姑娘穿草编凉鞋夺得500人超级马拉松冠军的真实故事切入，论证人类进化出的耐力狩猎机制——全身汗腺、弹性跟腱、稳定骨盆——是600万年演化的结晶，亦是AI最难触及的"物理护城河"。相比脑力技能被AI快速平替，植根于物理世界、需要实时身体反馈与意志力的体能恰恰是最难被复制的人类优势。文章同时以剑桥30万人研究、久坐对髋屈肌的永久性损伤等数据，揭示现代人已成为"史上最久坐不动的一代"，呼吁重新激活身体的原始潜能。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/IVqtw6wOkG5IWfsRMQ9HGQ)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIxNTAzNzU0Ng==&mid=2654905553&idx=2&sn=10dabf0701dc18f7634f55e69da5e0bf&chksm=8df769d44bae83cb158be19fd777de62e1826a183188c74eaddd244c0352878f57227a7e2a10#rd)
 
 ---
 
@@ -230,7 +230,7 @@ Anthropic完成H轮融资，投后估值9650亿美元，其逻辑不只是模型
 
 傅盛记录了"AI少年派·傅盛战队"黑客松总决赛的三款令人震撼的产品：00后团队12小时内搭出动作识别准确率95%的AI健身APP"练了么"、能实现智能导购与AI换衣的机器人零售交互系统、以及由最小11岁成员参与完成的可与AI博弈的狼人杀游戏。文章以此为例，提出"AI Native组织"概念——随机成组、无需项目经理、靠AI驱动协作，三人团队12小时产出完整产品级Demo，效率远超传统开发流程。傅盛的核心判断是：AI时代真正稀缺的不是体力与智力，而是"做什么"的想法，有想法、敢用AI的年轻人拥有前所未有的机会。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/OVAuxWnlCrDYZgXwL9X0aw)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5NjgzMzkwMQ==&mid=2653650666&idx=1&sn=9245fda23dfc21b933d272a9eab091b5&chksm=bcfdabc9b392d0ba906c73f2425b4db2cf021cc3b586bba92dd1783fc17a3a3c32d75f0d22e9#rd)
 
 ---
 
@@ -252,7 +252,7 @@ Anthropic完成H轮融资，投后估值9650亿美元，其逻辑不只是模型
 
 （正文内容为空，无法生成摘要）
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/JfHSZEUIiANiMqC3HBk9CA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzI0MDc5MjkxNw==&mid=2247489634&idx=1&sn=d8ec3c02bd2c4da0d4d22c9eecfd8088&chksm=e80f644955b00105f20e0bdc6c41e9904679e7d7ed13c0da740e1e44299586ed22366728dd3e#rd)
 
 ---
 
@@ -286,7 +286,7 @@ Anthropic完成H轮融资，投后估值9650亿美元，其逻辑不只是模型
 
 文章推荐《重构个体：AI时代如何打造个人竞争力》一书，核心是作者Axton提出的"四级协作阶梯模型"：从旁观者、工具使用者、协作伙伴到架构师，大多数人卡在第二级"勤奋的低效"——每个工具都提效了，但工具间的搬运消耗抵消了所有收益。升级的本质不是掌握更多技能，而是完成身份转变：从"用工具的人"变成"设计系统的人"。文章进一步指出三个必须接受的思维前提：知识从"存储"转向"提问"、技能从"熟练"转向"协作"、流程从"串行"转向"并行"，以及最核心的区分——手艺是你走了就没有的东西，资产是你不在也能自己跑的东西。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/uV9uus7oS~0~xTTZrHYv1w)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5NjQyMjE1NA==&mid=2650744647&idx=1&sn=b2c9b411f93b9888d04f161fd25e25ca&chksm=bf64cb0ac36f5dc2f42c74a2fe4eb16922fc9c62898de3b0922bebd8615bf2a92c5784ef4769#rd)
 
 ---
 
