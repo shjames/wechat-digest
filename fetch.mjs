@@ -35,7 +35,7 @@ const TARGET_DATE = getArg("date", yesterdayBJ());
 const OUTPUT_FILE = getArg("output", "");
 const ACCOUNTS_FILE = getArg("accounts", resolve(process.cwd(), "accounts.txt"));
 const PROXY = getArg("proxy", "http://localhost:3488");
-const PROXY_SCRIPT = "C:/Users/Administrator/.agents/skills/web-access/scripts/cdp-proxy.mjs";
+const PROXY_SCRIPT = "C:/Users/suzhiquan/.claude/skills/web-access/scripts/cdp-proxy.mjs";
 const BATCH_SIZE = 5;
 const FETCH_DELAY_MS = 800; // 每个账号间隔，避免限流
 
@@ -293,83 +293,54 @@ async function main() {
       }
     }
 
-    // 4.5 验证码检测与自动处理
+    // 4.5 验证码检测与截图（交由 Claude Vision 处理）
     const errCodes = Object.values(errors);
     const captchaCount = errCodes.filter(e => e === -2041 || e === "-2041").length;
     const totalErrors = errCodes.length;
-    if (captchaCount > 0) {
-      log(`⚠️ 检测到 ${captchaCount} 个账号返回 -2041，尝试自动处理验证码...`);
-
-      // 尝试自动处理验证码：激活 tab 到前台，导航到文章页，检测验证码弹窗
-      const captchaDone = await (async () => {
-        try {
-          // 激活 tab 到前台（验证码弹窗只在前台渲染）
-          await cdp(`/activate?target=${targetId}`);
-          await new Promise(r => setTimeout(r, 500));
-
-          // 找一个有 readerUrl 的账号，导航到文章页触发验证码
-          const readerUrl = Object.values(readerUrls)[0];
-          if (readerUrl) {
-            log(`导航到文章页触发验证码: ${readerUrl.slice(0, 60)}...`);
-            await cdp(`/navigate?target=${targetId}&url=${encodeURIComponent(readerUrl)}`);
-            await new Promise(r => setTimeout(r, 4000));
-          }
-
-          // 检测验证码弹窗（weread 使用 .ui-half-page-dialog 或 .wr_dialog）
-          for (let i = 0; i < 5; i++) {
-            const dialogInfo = await cdpEval(targetId, `(() => {
-              const selectors = ['.ui-half-page-dialog', '.wr_dialog', '#TDCaptcha', '[id*="captcha"]'];
-              for (const sel of selectors) {
-                const el = document.querySelector(sel);
-                if (el && el.offsetParent !== null) {
-                  return JSON.stringify({ found: true, sel, text: (el.innerText||'').slice(0,80) });
-                }
-              }
-              const txt = document.body.innerText || '';
-              if (['安全验证','请完成验证','点击验证','滑动验证','人机验证'].some(kw => txt.includes(kw))) {
-                return JSON.stringify({ found: true, sel: null, keyword: true });
-              }
-              return JSON.stringify({ found: false });
-            })()`);
-
-            let info;
-            try { info = typeof dialogInfo === "string" ? JSON.parse(dialogInfo) : dialogInfo; } catch { info = {}; }
-
-            if (info.found) {
-              log(`检测到验证码弹窗: ${JSON.stringify(info)}`);
-              // 尝试点击确认/验证按钮
-              const clicked = await cdpEval(targetId, `(() => {
-                const btns = Array.from(document.querySelectorAll('button, [role="button"], .wr_btn, .confirm-btn'));
-                for (const btn of btns) {
-                  const txt = (btn.textContent || '').trim();
-                  if (txt && (txt.includes('验证') || txt.includes('确认') || txt.includes('完成'))) {
-                    btn.scrollIntoView({ block: 'center' });
-                    btn.click();
-                    return '点击: ' + txt;
-                  }
-                }
-                return null;
-              })()`);
-              if (clicked) { log(`自动操作: ${clicked}`); await new Promise(r => setTimeout(r, 2000)); return true; }
-            }
-            await new Promise(r => setTimeout(r, 3000));
-          }
-          return false;
-        } catch (e) {
-          log(`自动处理验证码异常: ${e.message}`);
-          return false;
+    if (captchaCount > 0 && captchaCount === totalErrors) {
+      log(`⚠️ 检测到 ${captchaCount} 个账号返回 -2041，导航到文章页触发验证码并截图...`);
+      try {
+        await cdp(`/activate?target=${targetId}`);
+        await new Promise(r => setTimeout(r, 300));
+        const readerUrl = Object.values(readerUrls)[0];
+        if (readerUrl) {
+          log(`导航到: ${readerUrl.slice(0, 60)}...`);
+          await cdp(`/navigate?target=${targetId}&url=${encodeURIComponent(readerUrl)}`);
+          await new Promise(r => setTimeout(r, 4000));
         }
-      })();
+        // 检测验证码 iframe（腾讯验证码通过 captcha.gtimg.com iframe 渲染）
+        const iframeInfo = await cdpEval(targetId, `(() => {
+          const f = document.querySelector('iframe[id*="tcaptcha"], iframe[src*="captcha.gtimg.com"]');
+          if (!f) return JSON.stringify({ found: false });
+          const r = f.getBoundingClientRect();
+          return JSON.stringify({ found: true, id: f.id, x: r.x, y: r.y, w: r.width, h: r.height });
+        })()`);
+        let iframeData = {};
+        try { iframeData = JSON.parse(typeof iframeInfo === "string" ? iframeInfo : JSON.stringify(iframeInfo)); } catch {}
 
-      if (!captchaDone && captchaCount === totalErrors) {
-        log("");
-        log("╔════════════════════════════════════════╗");
-        log("║  全部账号返回 -2041（需要验证码）       ║");
-        log("║                                        ║");
-        log("║  请在 Chrome 中打开 weread.qq.com       ║");
-        log("║  进入任意公众号文章页面完成验证码        ║");
-        log("║  然后重新运行 fetch.mjs                 ║");
-        log("╚════════════════════════════════════════╝");
+        if (iframeData.found) {
+          log(`检测到验证码 iframe: ${JSON.stringify(iframeData)}`);
+          // 截图保存，供 Claude Vision 分析
+          const { resolve: pathResolve } = await import("node:path");
+          const screenshotPath = OUTPUT_FILE
+            ? pathResolve(OUTPUT_FILE, "../../tmp/captcha-screenshot.png")
+            : pathResolve(process.cwd(), "tmp/captcha-screenshot.png");
+          const shotResp = await cdp(`/screenshot?target=${targetId}&file=${encodeURIComponent(screenshotPath)}`);
+          log(`截图已保存: ${screenshotPath}`);
+          // 在输出 JSON 中写入 captcha 信号，供 Claude 读取后视觉处理
+          errors.__captcha__ = {
+            needsVision: true,
+            screenshotPath,
+            readerUrl: Object.values(readerUrls)[0] || null,
+            targetId,
+            iframeRect: { x: iframeData.x, y: iframeData.y, w: iframeData.w, h: iframeData.h },
+          };
+          log("已写入 captcha 信号，等待 Claude Vision 处理后重新运行");
+        } else {
+          log("未检测到验证码 iframe，可能已通过或页面未加载完成");
+        }
+      } catch (e) {
+        log(`验证码截图异常: ${e.message}`);
       }
     }
 
