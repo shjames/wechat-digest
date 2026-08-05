@@ -20,7 +20,7 @@
 
 以美国公司 Palantir 为例回答咨询业是否会被 AI 颠覆：AI 不会消灭咨询业，但咨询公司必须进化。Palantir 曾被视为人力密集、难规模化，其派驻现场的 FDE（前置部署工程师）与普通驻场实施的区别在于：FDE 把现场的土办法带回总部，经十余个客户提炼成标准产品 Foundry，后续不再靠人堆。微软、亚马逊、OpenAI 也纷纷跟进。结论：咨询业进化方向是把前线经验沉淀为产品。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/dBkPBo~dBEvcxT7e5W2Xmw)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5NjM5MjQ4MQ==&mid=2651786147&idx=1&sn=91e8c4202443dd4a685ece8e2941bf67&chksm=bc65a0481a4f4c6d3e98ffd41c54bf1fef2366086fb6e424f2fb147dff79c677708e72d5a302#rd)
 
 ### [继续恶补财务思维（08:31）](https://weread.qq.com/web/mp/reader/18a422e224d505f5758535f323339363339323438310b7?v=2)
 
@@ -32,7 +32,7 @@
 
 做决策时人们常被当下的得失绑架，如工资差两千、方案更稳妥，但多年后真正令人耿耿于怀的往往是当时没敢选的路。决策的真正裁判是十年后回望此刻的自己，应跳脱短期得失，以未来视角审视今日选项：让人生悔最少的那个就是最该选的。短期得失会遮蔽长期目光，决策质量最终由未来的感受来打分。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/YhJMA~Uush6l2au8ZxllAQ)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5NjM5MjQ4MQ==&mid=2651786147&idx=3&sn=4d99cfd003b5469ca2098473d453b48c&chksm=bc63b504c0f7ac465a2259edeca02c028c49a971bfa2a6b2e04053243e1045504e9b51317357#rd)
 
 ### [08月04日（勤商日历卡片）：不能把管理者的缺失，赖在员工头上（08:31）](https://weread.qq.com/web/mp/reader/18a422e224d505f5758535f323339363339323438310b7?v=2)
 
@@ -58,7 +58,7 @@
 
 苹果发布2026财年第三财季财报，营收同比增长16.36%，净利润增长27.12%，毛利率升至50%以上，但股价却暴跌7.35%。文章分析认为，存储与芯片涨价确属事实，但苹果产品毛利率反而提升5.5个百分点，服务业务毛利率高达75.6%并缓冲了硬件成本压力，说明苹果涨价并非不涨就要亏，而是不涨价就要少赚，其赚钱效率数倍于三星、小米等安卓阵营。增长主力是iPhone 17系列与Mac，合计贡献总营收59%，存量用户进入集中换机窗口期；隐忧在于iPad收入同比下滑5.93%，可穿戴及配件增长乏力。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/azAja3Fk4nmTEZ8y39QF~A)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzI0NjYzNzY5Mw==&mid=2247627553&idx=1&sn=07749ed8b4d6c5cb7ea400cee31ed833&chksm=e84e2ad0b365e363f6f403c66059c260b6d2fd78201400587eaeb2b4cff0106dd55490479fe4#rd)
 
 ### [微软首次明确将8GB内存作为优化目标 要优化Win11在8GB内存的使用体验（13:06）](https://weread.qq.com/web/mp/reader/f3d42a9224d505f5758535f33323436363337363933e92?v=2)
 
@@ -80,13 +80,13 @@
 
 北大与元空实验室开源科研智能体 OpenAI4S，MIT 协议、零依赖复刻 Claude Science。核心是 Code-as-Action：生成 Python/R 代码在持续内核执行，数据与中间结果留在环境中，任务可串联；内置 30 余个科研 Skills，覆盖蛋白、单细胞、文献检索，14 个需 GPU，可接自有算力；产物自动保存并版本化，不可用时明确告知、不编造数据。目标是让 AI 走完从提问到产出。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/FroB6Z52CElGuB~ch18esA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247909661&idx=2&sn=e2fa7bc0803bd3d6cf5f152e99729b46&chksm=e99080888be03b4b965bffc513f12266572a78bae28297aff68310b64cf7699f637c234ac42a#rd)
 
 ### [智源&北大用一句话完成音视频联合编辑 | SIGGRAPH Asia'26（17:01）](https://weread.qq.com/web/mp/reader/a4f42c2224d505f5758535f33323336373537353333b72?v=2)
 
 北京智源人工智能研究院与北京大学联合团队提出InstructAV2AV，用一句自然语言指令即可同时编辑视频中的视觉对象及其对应声音，无需掩码或边界框，画面与声音在同一个端到端生成过程中共同响应指令。团队先构建素材筛选、目标合成、质量验证三步自动化流水线，产出含7.9万组自动验证样本与1000组人工精筛评测样本的InsAVE-80K数据集；再以预训练音视频生成模型Ovi为基础，通过源潜变量拼接、指令引导与双向跨模态注意力，解决源内容锚定、编辑区域定位和跨模态同步三个核心问题。成果已被SIGGRAPH Asia 2026接收，代码、权重与数据均已开源。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/vX~4wWpK3cWSWW6Kk4ofhA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzIzNjc1NzUzMw==&mid=2247909661&idx=3&sn=93d5f6e39859c6c9c378533ba3009898&chksm=e94981717ea89e490ee6aa7257dd31b5b03f10af26102740b81493bf8ad22312c9bc48098713#rd)
 
 ### [量子位编辑作者招聘（17:01）](https://weread.qq.com/web/mp/reader/a4f42c2224d505f5758535f33323336373537353333b72?v=2)
 
@@ -176,7 +176,7 @@ AI内容平台量子位发布招聘，开放AI产业（芯片、AI Infra、云�
 
 红杉以15万美元投资苹果赚约40倍，巴菲特投入360亿美元赚上千亿且仍重仓，说明倍数满足智力、基数决定命运，看对公司不等于赚到钱。重仓不是勇气测试，而是理念的正义：真正懂公司、理解护城河且有安全边际才可重仓，伯克希尔以极高胜率、不错赔率和高置信度结合凯利公式定仓位；邓普顿、施洛斯、林奇则主张分散稀释错误杀伤力。第三种智慧是小仓试探、盈利基础上逐步加码。对人生而言，本性和习性是生命的重仓。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/sjbuW2cuxv~laZn-NhPZGA)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MjM5ODAyMjg3Ng==&mid=2650759848&idx=1&sn=dec4cf70ea5bfdca3914526ad02226e4&chksm=bf062c3157e507659aa09b501a02d3026378b140961b511e50ca2fab1f4f14c295298fce9606#rd)
 
 ---
 
@@ -212,7 +212,7 @@ AI内容平台量子位发布招聘，开放AI产业（芯片、AI Infra、云�
 
 AI应用生成平台灵珠开放公测并推出魔改二创功能，用户可用自然语言生成小应用，也能在他人作品基础上修改迭代；接入DeepSeek V4后需求分析时间由近20秒缩短至5秒内，公开广场已有1437个作品。与海外Aippy、Loopit的可玩信息流模式不同，灵珠更像应用广场，面向不懂产品、设计与代码的普通人。作者实测自创采访助手与魔改宫廷风单词应用，验证了从需求拆解、功能取舍到二创保留数据的完整流程。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/Aam6GlrIB~T030ICrPJ0ZQ)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzkyNjU2ODM2NQ==&mid=2247631555&idx=2&sn=e2012dbe8743437beb39f8b0215f090a&chksm=c357409e1ac54f8638b8d9d60b2bbcfe8529857173e72452d56ab8534a03609d8a916bad4d9b#rd)
 
 ### [OpenAI天价网红公关活动，捅马蜂窝了（09:55）](https://weread.qq.com/web/mp/reader/70e42bf224d505f5758535f33393236353638333635fa8?v=2)
 
@@ -290,7 +290,7 @@ DeepSeek V4 Flash 上线，每百万 token 仅 3 美分，为模型性价比画�
 
 文章回应AI时代前端工程师的职业焦虑，认为答案不在前端转后端、转AI的列单式学习路线，而在于两种能力：判断力，即判断该做什么、值不值得做、风险在哪里；闭环能力，即把判断推进到设计、实现、验证和交付。公司付费的对象是能找到值得解决的问题并把结果做出来的人，写代码只是其中一个环节。现有岗位边界是上一轮互联网扩张红利塑造的专业分工，如今增长放缓、高价值问题变少，公司会重新核算每增一人的边际价值，AI只是加快了这一进程。AI越强，这两种能力越容易拉开人与人之间的差距。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/-z~uXSmrvlOMcvCxRoqF7Q)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzI0MDc5MjkxNw==&mid=2247489938&idx=1&sn=67e88afda764be2e4f13c924a6984f72&chksm=e8d95ecff227a89af5f39d6dc7b5057f1d990952da8cefdb2db531f3a0828f57e7bc833a2595#rd)
 
 ---
 
@@ -304,7 +304,7 @@ DeepSeek V4 Flash 上线，每百万 token 仅 3 美分，为模型性价比画�
 
 多数想法不是没有，而是从出现到变成文字的成本过高导致消失。早年语音输入因识别率低、易丢失被放弃，近期与ChatGPT、Codex语音交互后发现识别体验已大幅改善。新流程是先说出来，再交由AI转写、整理和提炼，计划实测Typeless、微信输入法与豆包输入法。语音输入速度更快、降低记录门槛、让记录更连续，还能发现英语发音问题；安静场合仍适用键盘。工具简化之后，观察生活、形成判断与表达什么才更重要。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/SP99XkQD0Z~GYbQsSV69xw)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzA5MjQwMzQyNw==&mid=2650777649&idx=1&sn=46605ee06a8197e40e928aa29b9030ff&chksm=89783ef90fe9aabadfba8124fad7ba25f3e1f37ba16efd253430a604dd415a5306bf30444cc4#rd)
 
 ---
 
@@ -332,7 +332,7 @@ DeepSeek V4 Flash 上线，每百万 token 仅 3 美分，为模型性价比画�
 
 8 月 4 日大盘低开高走，回到 4.2 星，中小盘与成长风格领涨，科创板两日波动近 10%，呈牛市中后期轮动。本期定投：主动优选组合 10552 元（回低估恢复）、月薪宝 5000 元；养老金账户定投中证 A50 与 300 红利低波动，此前中证 A500 已完成 40% 止盈，收益约 38%-40%。并提醒中小盘指数部分高估，出现止盈机会，推广新书《个人养老金投资指南》，主张耐心定投。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/Vrux~50NlqlAT-sk-69ung)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzAwNzQ5ODk3Nw==&mid=2651096748&idx=1&sn=846399a5c0921a35086a5fb3a995b776&chksm=81b5b64620d3f378a1f30fedd6724eee15bebf3d138ae163f8aa859cf7b5cf9e794b9f21e3cc#rd)
 
 ### [如何把市场波动，变成投资机会？｜投资小知识（21:33）](https://weread.qq.com/web/reader/MP_WXS_3007498977_BeolpZNCEy3loUGnVmKfsA)
 
@@ -344,7 +344,7 @@ DeepSeek V4 Flash 上线，每百万 token 仅 3 美分，为模型性价比画�
 
 文章梳理4星级至4.9星级市场的特点与应对：该区间买入股票基金仍有下跌空间，历史上一轮熊市从4星级到5.9星级，大盘可能出现30%至40%级别的下跌，需控制波动风险。三个方法：一是浮亏阶段坚持定投、不断降低持仓成本，依靠微笑曲线不必等涨回原价即可盈利；二是分散配置一篮子低估品种的基金组合；三是控制仓位，长期不用的资金中股票基金配置最好不超过100减去年龄的比例。
 
-> 📎 [原文链接](https://mp.weixin.qq.com/s/cr84GCrdJcm7DOaPHu~G~A)
+> 📎 [原文链接](https://mp.weixin.qq.com/s?__biz=MzAwNzQ5ODk3Nw==&mid=2651096748&idx=3&sn=5993dad30b242a64b8359d56cb23ade9&chksm=81ad699273de968aa4c307651b4472565e01513fe2df28ca489349938fc323ce1aa3df08f5c4#rd)
 
 ---
 
