@@ -35,6 +35,8 @@ const TARGET_DATE = getArg("date", yesterdayBJ());
 const OUTPUT_FILE = getArg("output", "");
 const ACCOUNTS_FILE = getArg("accounts", resolve(process.cwd(), "accounts.txt"));
 const PROXY = getArg("proxy", "http://localhost:3488");
+// --no-captcha：检测到 -2041 时不导航、不截图，直接原样输出，交由调用方决定如何处理
+const NO_CAPTCHA = args.includes("--no-captcha");
 const PROXY_SCRIPT = "C:/Users/suzhiquan/.claude/skills/web-access/scripts/cdp-proxy.mjs";
 const BATCH_SIZE = 5;
 const FETCH_DELAY_MS = 800; // 每个账号间隔，避免限流
@@ -297,7 +299,9 @@ async function main() {
     const errCodes = Object.values(errors);
     const captchaCount = errCodes.filter(e => e === -2041 || e === "-2041").length;
     const totalErrors = errCodes.length;
-    if (captchaCount > 0 && captchaCount === totalErrors) {
+    if (NO_CAPTCHA && captchaCount > 0) {
+      log(`⚠️ 检测到 ${captchaCount} 个账号返回 -2041（--no-captcha 已跳过验证码流程，未导航、未截图）`);
+    } else if (captchaCount > 0 && captchaCount === totalErrors) {
       log(`⚠️ 检测到 ${captchaCount} 个账号返回 -2041，导航到文章页触发验证码并截图...`);
       try {
         await cdp(`/activate?target=${targetId}`);
