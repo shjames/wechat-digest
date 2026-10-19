@@ -60,14 +60,14 @@ function callClaude(userPrompt) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       model: MODEL,
-      max_tokens: 300,
+      max_tokens: 1500,
       system: '你是一位公众号内容编辑，擅长写简洁客观的文章摘要。用100-150字中文，一段话，包含核心观点+主要论据+结论，客观简练第三人称，不重复标题，不用项目符号，不用"本文讲述了"等套话。',
       messages: [{ role: 'user', content: userPrompt }],
     });
     const url = new URL('/v1/messages', BASE_URL);
     const opts = {
       hostname: url.hostname,
-      port: url.port || 443,
+      port: url.port || (url.protocol === 'http:' ? 80 : 443),
       path: url.pathname,
       method: 'POST',
       headers: {
@@ -77,10 +77,11 @@ function callClaude(userPrompt) {
         'Content-Length': Buffer.byteLength(body),
       },
     };
-    const req = https.request(opts, (res) => {
+    const lib = url.protocol === 'http:' ? http : https;
+    const req = lib.request(opts, (res) => {
       let d = ''; res.on('data', (c) => (d += c));
       res.on('end', () => {
-        try { resolve(JSON.parse(d).content?.[0]?.text || ''); }
+        try { resolve(JSON.parse(d).content?.find((b) => b.type === 'text')?.text || ''); }
         catch (e) { reject(new Error(d.slice(0, 200))); }
       });
     });
@@ -169,7 +170,11 @@ async function main() {
 
     process.stdout.write(`  [${i + 1}/${toProcess.length}] ${art.account.slice(0, 8)} | ${art.title.slice(0, 22)}... `);
     try {
-      const summary = await callClaude(`文章标题：${art.title}\n\n正文节选：\n${text.slice(0, 2000)}`);
+      let summary = '';
+      // 模型偶尔只返回 thinking 块导致 text 为空，重试最多 3 次
+      for (let attempt = 0; attempt < 3 && !summary.trim(); attempt++) {
+        summary = await callClaude(`文章标题：${art.title}\n\n正文节选：\n${text.slice(0, 2000)}`);
+      }
       summaries[art.reviewId] = summary.trim();
       console.log(`✓ (${summary.trim().length}字)`);
     } catch (e) {
