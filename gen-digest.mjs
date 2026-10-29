@@ -42,13 +42,29 @@ function cdpPost(path, body) {
   });
 }
 
+// 部分公众号文章（约 15%）正文存在 content_noencode: '...' 的 JsDecode 字符串里，
+// 而不是 #js_content 标签；从浏览器取回该片段后在 Node 侧解码。
+function decodeNoencode(chunk) {
+  const m = chunk.match(/^content_noencode\s*:\s*'((?:[^'\\]|\\.)*)'/);
+  if (!m) return '';
+  return m[1].replace(/\\(?:x([0-9a-fA-F]{2})|u([0-9a-fA-F]{4})|(n)|(')|(\\))/g,
+    (all, x, u, n, q, bs) => (x ? String.fromCharCode(parseInt(x, 16))
+      : u ? String.fromCharCode(parseInt(u, 16))
+        : n ? '\n' : q ? "'" : '\\'));
+}
+
 async function getFullText(tid, rid) {
-  const js = `fetch('https://weread.qq.com/web/mp/content?reviewId='+encodeURIComponent('${rid}')).then(function(r){return r.text()}).then(function(html){var lm=html.match(/link:\\s*['"](https?:\\/\\/mp\\.weixin[^'"]*)/);var mpUrl=lm?lm[1].replace(/\\x26amp;/g,'&').replace(/&amp;/g,'&').replace(/\\u0026/g,'&'):'';var doc=new DOMParser().parseFromString(html,'text/html');var t=doc.querySelector('#js_content,.rich_media_content');var text=t?t.innerText:doc.body.innerText;text=(text||'').replace(/\\s+/g,' ').trim().slice(0,3000);return JSON.stringify({mpUrl:mpUrl,text:text})})`;
+  const js = `fetch('https://weread.qq.com/web/mp/content?reviewId='+encodeURIComponent('${rid}')).then(function(r){return r.text()}).then(function(html){var lm=html.match(/link:\\s*['"](https?:\\/\\/mp\\.weixin[^'"]*)/);var mpUrl=lm?lm[1].replace(/\\x26amp;/g,'&').replace(/&amp;/g,'&').replace(/\\u0026/g,'&'):'';var doc=new DOMParser().parseFromString(html,'text/html');var t=doc.querySelector('#js_content,.rich_media_content');var text=t?t.innerText:doc.body.innerText;var ni=html.indexOf('content_noencode');var chunk=ni>-1?html.slice(ni,ni+8000):'';text=(text||'').replace(/\\s+/g,' ').trim().slice(0,3000);return JSON.stringify({mpUrl:mpUrl,text:text,chunk:chunk})})`;
   const res = await cdpPost('/eval?target=' + tid, js);
   try {
     const outer = JSON.parse(res);
     const inner = JSON.parse(outer.value || '{}');
-    return { reviewId: rid, mpUrl: inner.mpUrl || '', text: inner.text || '' };
+    const out = { reviewId: rid, mpUrl: inner.mpUrl || '', text: inner.text || '' };
+    if (out.text.length < 300 || out.text.startsWith('window.page_begintime')) {
+      const dec = decodeNoencode(inner.chunk || '');
+      if (dec.length > 200) out.text = dec.slice(0, 3000);
+    }
+    return out;
   } catch (e) {
     return { reviewId: rid, mpUrl: '', text: '', error: e.message };
   }
@@ -114,6 +130,23 @@ async function main() {
   if (fs.existsSync(CONTENT_FILE)) {
     console.log(`已有 ${CONTENT_FILE}，跳过全文提取`);
     articles = JSON.parse(fs.readFileSync(CONTENT_FILE, 'utf8'));
+
+    // 已有文件里若有正文缺失（JsDecode 页面源码 / 抓取时正文未就绪），补抓一次
+    const bad = articles.filter((a) => !a.fullText || a.fullText.startsWith('window.page_begintime'));
+    if (bad.length) {
+      console.log(`  补抓 ${bad.length} 篇缺失正文...`);
+      const tab = JSON.parse(await cdpGet('/new?url=https://weread.qq.com'));
+      await sleep(4000);
+      for (const art of bad) {
+        const got = await getFullText(tab.targetId, art.reviewId);
+        if (got.text) art.fullText = got.text;
+        if (got.mpUrl) art.extractedMpUrl = got.mpUrl;
+        await sleep(300);
+      }
+      await cdpGet('/close?target=' + tab.targetId);
+      fs.writeFileSync(CONTENT_FILE, JSON.stringify(articles, null, 2));
+      console.log(`  已更新 ${CONTENT_FILE}`);
+    }
   } else {
     console.log('Phase 1: 提取全文...');
     const allArts = [];
