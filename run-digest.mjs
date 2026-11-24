@@ -36,6 +36,7 @@ const JOB_FILE = resolve(TMP, "digest-job.json");
 const args = process.argv.slice(2);
 const log = (...a) => console.error("[run]", ...a);
 const out = (obj) => console.log(JSON.stringify(obj, null, 2));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function loadJob() {
   try { return JSON.parse(readFileSync(JOB_FILE, "utf-8")); }
@@ -164,8 +165,15 @@ async function main() {
         "--output", `tmp/fetch-result-${mmdd(date)}.json`,
         "--no-captcha", // 验证码统一由本编排器处理
       ];
-      const r = runNode("fetch.mjs", fetchArgs);
-      if (r.code !== 0) {
+      // CDP 新建 tab 偶发「页面就绪检查返回空」的时序问题，自动重试最多 3 次
+      let r;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        r = runNode("fetch.mjs", fetchArgs);
+        if (r.code === 0 && r.stdout.trim()) break;
+        log(`fetch 第 ${attempt}/3 次未成功（偶发 CDP 时序问题），重试...`);
+        if (attempt < 3) await new Promise((res) => setTimeout(res, 2000));
+      }
+      if (r.code !== 0 || !r.stdout.trim()) {
         log(`fetch 失败:\n${r.stdout}\n${r.stderr}`);
         out({ status: "ERROR", phase: "fetch", date, stdout: r.stdout, stderr: r.stderr });
         process.exit(1);
@@ -278,7 +286,8 @@ async function main() {
     // ── 阶段5：提交推送 ──────────────────────────────────────────
     if (phase === "push") {
       log("提交并推送...");
-      const add = runGit(["add", "output", "site"]);
+      // site/ 被 .gitignore 忽略，只提交 output 下的日报 md
+      const add = runGit(["add", "output"]);
       if (add.code !== 0) { out({ status: "ERROR", phase: "push", stderr: add.stderr }); process.exit(1); }
       const label = state.dates.length === 1 ? state.dates[0] : `${state.dates[0]}..${state.dates[state.dates.length - 1]}`;
       const commit = runGit(["commit", "-m", `add ${label} digest`]);
